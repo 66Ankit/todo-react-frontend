@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Form from './components/Form/Form';
 import Todo from './components/Todos/Todo';
 import { useEffect } from 'react';
+import axios from 'axios'
 
 function App() {
 
@@ -22,10 +23,31 @@ function App() {
 
  // get local storage
 
- const getLocalStorage = () =>{
-   if(localStorage.getItem('todos') === null)
+ const getLocalStorage = async () =>{
+  
+  const url="https://nodejs-todo-api-ankit.herokuapp.com/api/todos/61c782c3ae191ac14f31f6a9"
+      
+      // setTodos()
+      
+      // console.log(serverData)
+      // console.log(serverTodos)
+      // 
+  
+      
+  if(localStorage.getItem('todos') === null)
    {
-     localStorage.setItem('todos', JSON.stringify([]))
+     const serverData= await axios.get(url)
+      const serverTodos =[] 
+      serverData.data.forEach(element => {
+
+        serverTodos.push({"text":element.todo,
+                          "completed":element.completed,
+                        "id":element._id})
+        
+      });
+      localStorage.setItem('todos',JSON.stringify(serverTodos));
+      setTodos(serverTodos)
+    //  localStorage.setItem('todos', JSON.stringify([]))
    }
    else{
      let todosLocal=JSON.parse(localStorage.getItem('todos'))
